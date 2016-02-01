@@ -6,10 +6,12 @@ The lists below contain software packages, libraries and modules necessary for e
 
 ###Network Scans and Pings
 
-####Nmap Scans
-The below script utilises the Nmap Python library to a TCP SYN scan. Nmap is used as it can provide informative output and has support for IPv6 as well.
-
+####Nmap Scripts
+These scripts use the Nmap module for Python to perform various network scans. Nmap is used as it can provide informative output and works reliably with IPv6.
 #####nmap_tcp_syn_scan.py
+- Python 2
+- python-nmap
+#####nmap_udp_scan.py
 - Python 2
 - python-nmap
 
@@ -18,11 +20,9 @@ These scripts use the Python module Scapy to perform some basic network scans. N
 #####scapy_ping.py
 - Python 2
 - Scapy
-
 #####scapy_tcp-ping.py
 - Python 2
 - Scapy
-
 #####scapy_udp-ping.py
 - Python 2
 - Scapy
