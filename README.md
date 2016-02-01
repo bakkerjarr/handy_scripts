@@ -11,6 +11,7 @@ These scripts use the Nmap module for Python to perform various network scans. N
 #####nmap_tcp_syn_scan.py
 - Python 2
 - python-nmap
+
 #####nmap_udp_scan.py
 - Python 2
 - python-nmap
@@ -20,9 +21,11 @@ These scripts use the Python module Scapy to perform some basic network scans. N
 #####scapy_ping.py
 - Python 2
 - Scapy
+
 #####scapy_tcp-ping.py
 - Python 2
 - Scapy
+
 #####scapy_udp-ping.py
 - Python 2
 - Scapy
