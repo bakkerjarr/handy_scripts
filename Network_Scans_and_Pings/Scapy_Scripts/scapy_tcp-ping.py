@@ -19,46 +19,46 @@ __status__ = "Works as desired."
 NUM_PORT_SRC = 1234
 TIME_SLEEP = 1
 
-"""
-Catch Ctrl+C and terminate the script somewhat gracefully.
-"""
+
 def signal_handler(signal, frame):
+    """Catch Ctrl+C and terminate the script somewhat gracefully.
+    """
     print("[!] Terminating script.")
     exit(0)
 
-"""
-Generate a random number to act as an ephemeral port. The chances of a
-collision happening should be low.
 
-:return - an int representing an ephemeral port.
-"""
 def get_port_ephem():
+    """Generate a random number to act as an ephemeral port. The chances of a
+    collision happening should be low.
+
+    :return - an int representing an ephemeral port.
+    """
     return randint(32768, 61000)
 
-"""
-Send a TCP header and print the result.
 
-:param host_ip4 - the host to send the header to.
-:param port_dst - the destination port number.
-:param port_src - the source port number.
-:param num - the packet in the sequence that the header belongs to.
-"""
 def send_tcp(host_ip4, port_dst, port_src, num):
+    """Send a TCP header and print the result.
+
+    :param host_ip4 - the host to send the header to.
+    :param port_dst - the destination port number.
+    :param port_src - the source port number.
+    :param num - the packet in the sequence that the header belongs to.
+    """
     resp = sr1(IP(dst=host_ip4)/TCP(dport=port_dst, sport=port_src),
                verbose=False)
     print(resp.summary() + "\t# {0}".format(num))
 
-"""
-'Ping' a host using TCP.
 
-:param host_ip4 - the host to send the TCP header to.
-:param port_dst - the TCP destination port number to connect to.
-:param ephem - generate an ephemeral source port of True, otherwise use
-               the same source port number.
-:param count - the number of headers to send. If < 1 then don't stop
-               sending TCP headers.
-"""
 def main(host_ip4, port_dst, ephem, count):
+    """'Ping' a host using TCP.
+
+    :param host_ip4 - the host to send the TCP header to.
+    :param port_dst - the TCP destination port number to connect to.
+    :param ephem - generate an ephemeral source port of True, otherwise use
+                   the same source port number.
+    :param count - the number of headers to send. If < 1 then don't stop
+                   sending TCP headers.
+    """
     print("[+] Starting TCP scan to {0}:{1}".format(host_ip4, port_dst))
     if count < 1:
         i = 1
