@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-"""Use Scapy to ping a host using an ICMP Echo Request.
-"""
-
 from sys import exit
 import argparse
 import signal
@@ -16,6 +13,8 @@ __status__ = "Works as desired."
 class TCPSYNScan:
     """Use Nmap to port scan a host. A TCP SYN scan is used.
     """
+
+    _NMAP_FLAGS = "-sS"
 
     def __init__(self, host, ports):
         """Initial fields and handlers.
@@ -42,7 +41,7 @@ class TCPSYNScan:
         :return: The result of the scan as a string.
         """
         scanner = nmap.PortScanner()
-        scanner.scan(host, port, "-sS")
+        scanner.scan(host, port, self._NMAP_FLAGS)
         return scanner[host]["tcp"][int(port)]["state"]
 
     def start_scan(self):
