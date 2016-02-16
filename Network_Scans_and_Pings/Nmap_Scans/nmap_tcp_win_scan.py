@@ -78,8 +78,9 @@ if __name__ == "__main__":
         # using range then convert to list of str.
         ports = range(int(args.ports[0]), int(args.ports[len(
             args.ports)-1])+1)
-        # Not safe in Python 3. Not an issue though I don't believe
-        # that the Nmap library has been ported from Python 2.
+        # The next line of code won't work in Python 3. This should
+        # not be an issue however as I don't believe that the Nmap
+        # library has been ported to Python 3.
         ports = map(str, ports)
 
     # Let's scan!
