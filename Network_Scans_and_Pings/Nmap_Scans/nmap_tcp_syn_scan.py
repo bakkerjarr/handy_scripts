@@ -15,8 +15,8 @@ class TCPSYNScan:
     """Use Nmap to port scan a host. A TCP SYN scan is used.
     """
 
-    _RESULT_FILENAME = "scan_results.log"
     _NMAP_FLAGS = "-sS"
+    _RESULT_FILENAME = "scan_results.log"
 
     def __init__(self, host, ports):
         """Initial fields and handlers.
@@ -70,7 +70,7 @@ class TCPSYNScan:
                 results[scan_result] = [port]
             else:
                 results[scan_result].append(port)
-        string = ("[+] Scan complete.")
+        string = "[+] Scan complete."
         print(string)
         self._file.write(string + "\n")
         string = ("[?] Printing results of the port scan. Please see\n"
