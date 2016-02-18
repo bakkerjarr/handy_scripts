@@ -8,11 +8,16 @@ import signal
 import nmap
 
 __author__ = "Jarrod N. Bakker"
-__status__ = "Untested."
+__status__ = "Implemented - results may not be trustworthy due to " \
+             "this type of scan."
 
 
 class TCPWINScan:
     """Use Nmap to port scan a host. A TCP WIN scan is used.
+
+    Note that the results of this scan cannot also be trusted. See
+    https://nmap.org/book/man-port-scanning-techniques.html for more
+    information.
     """
 
     _NMAP_FLAGS = "-sW"

@@ -8,7 +8,7 @@ import signal
 import nmap
 
 __author__ = "Jarrod N. Bakker"
-__status__ = "Untested."
+__status__ = "Works as desired."
 
 
 class TCPXMASScan:
