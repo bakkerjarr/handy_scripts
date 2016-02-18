@@ -8,6 +8,11 @@ The lists below contain software packages, libraries and modules necessary for e
 
 ####Nmap Scripts
 These scripts use the Nmap module for Python to perform various network scans. Nmap is used as it can provide informative output and works reliably with IPv6.
+#####nmap_tcp_ack_scan.py
+- Python 2
+- python-nmap
+- prettytable
+
 #####nmap_tcp_fin_scan.py
 - Python 2
 - python-nmap
