@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from prettytable import PrettyTable
 from sys import exit
 import argparse
 import signal
@@ -15,6 +16,7 @@ class TCPFINScan:
     """
 
     _NMAP_FLAGS = "-sF"
+    _RESULT_FILENAME = "scan_results.log"
 
     def __init__(self, host, ports):
         """Initial fields and handlers.
@@ -24,13 +26,18 @@ class TCPFINScan:
         """
         self._host = host
         self._ports = ports
+        self._file = None
         # Register a handler for catching Ctrl+c
         signal.signal(signal.SIGINT, self.signal_handler)
 
     def signal_handler(self, signal, frame):
         """Catch Ctrl+C and terminate the script somewhat gracefully.
         """
-        print("[!] Terminating script.")
+        string = "[!] Terminating script."
+        print(string)
+        if self._file is not None:
+            self._file.write(string + "\n")
+            self._file.close()
         exit(0)
 
     def scan_port(self, host, port):
@@ -47,11 +54,73 @@ class TCPFINScan:
     def start_scan(self):
         """Start the TCP FIN scan.
         """
-        print "[?] Starting TCP FIN scan on host {0}".format(self._host)
+        results = {}
+        self._file = open(self._RESULT_FILENAME, "a")
+        string = ("[?] Starting TCP FIN scan on host {0}".format(
+            self._host))
+        print(string)
+        self._file.write(string + "\n")
         for port in self._ports:
-            result = self.scan_port(self._host, port)
-            print("[*] {0} tcp/{1} {2}".format(self._host, port, result))
-        print "[+] Scan complete."
+            scan_result = self.scan_port(self._host, port)
+            string = ("[*] {0} tcp/{1} {2}".format(self._host, port,
+                                                   scan_result))
+            print(string)
+            self._file.write(string + "\n")
+            if scan_result not in results:
+                results[scan_result] = [port]
+            else:
+                results[scan_result].append(port)
+        string = "[+] Scan complete."
+        print(string)
+        self._file.write(string + "\n")
+        string = ("[?] Printing results of the port scan. Please see\n"
+                  "https://nmap.org/book/man-port-scanning-basics.html\n"
+                  "for a description of the six port states recognised "
+                  "by Nmap.")
+        print string
+        self._file.write(string + "\n")
+        string = (self._format_results(results))
+        print string
+        self._file.write(string + "\n")
+        self._file.close()
+
+    def _format_port_line(self, values):
+        """Format a list of port numbers into a string with new lines.
+
+        :param values: List of port number values.
+        :return: Formatted string.
+        """
+        separator = ", "
+        line_len = 0
+        value_str = ""
+        values_len = len(values)
+        count = 0
+        for value in values:
+            if line_len > 52:
+                value_str += "\n"
+                line_len = 0
+            if count+1 != values_len:
+                value_str += str(value) + separator
+            else:
+                value_str += str(value)
+            line_len += len(str(value)) + len(separator)
+            count += 1
+        return value_str
+
+    def _format_results(self, results):
+        """Format the results of the Nmap port scan to the terminal
+        window.
+
+        :param results: Dict of results.
+        :return: Formatted results of the scan as a string.
+        """
+        table = PrettyTable(["Port Status", "Port Number/s"])
+        table.align["Port Status"] = "l"
+        table.align["Port Number/s"] = "r"
+        for port_status in results:
+            value_str = self._format_port_line(results[port_status])
+            table.add_row([port_status, value_str])
+        return table.get_string()
 
 if __name__ == "__main__":
     # TODO Add command line argument checking.
