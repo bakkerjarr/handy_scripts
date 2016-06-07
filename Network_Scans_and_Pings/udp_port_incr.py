@@ -6,6 +6,7 @@ to the value of the port number.
 """
 
 from random import randint
+import datetime as dt
 import sys
 import time
 import argparse
@@ -73,6 +74,7 @@ if __name__ == "__main__":
     host_ip4_help = "The target machine's IPv4 address."
     duration_help = "The duration of the scan (sec)."
     pps_help = "Number of frames to send per second."
+    start_help = "Time to start the script at (optional)."
     
     parser = argparse.ArgumentParser(description=program_desc)
     parser.add_argument("host_ip4", metavar="IPv4", type=str,
@@ -81,8 +83,22 @@ if __name__ == "__main__":
                         type=int, help=duration_help)
     parser.add_argument("pps", metavar="PACKETS-PER-SECOND", default=0,
                         type=int, help=pps_help)
-
+    parser.add_argument("-s", dest="start", default="N/A",
+                        help=start_help)
     args = parser.parse_args()
+    if args.start != "N/A":
+        start_time = None
+        try:
+            start_time = dt.datetime.strptime(args.start, "%H:%M")
+        except ValueError:
+            print("[-] Invalid time passed.")
+            sys.exit(-1)
+        current_time = dt.datetime.now().strftime("%H:%M:%S")
+        normalised_current = dt.datetime.strptime(current_time,
+                                                  "%H:%M:%S")
+        wait_for = (start_time - normalised_current).seconds
+        print("waiting for: {0}".format(wait_for))
+        time.sleep(wait_for)
     if args.pps < 1:
         print("[-] Packets per second argument should be a whole "
               "number larger than 0.")
