@@ -48,21 +48,29 @@ def send_udp(host_ip4, port_dst, port_src, num):
         verbose=True)
 
 
-def main(host_ip4, duration, pps):
+def main(host_ip4, duration, pps, second_host):
     """'Ping' a host using UDP.
 
     :param host_ip4 - the host to send the UDP header to.
     :param duration - duration of the test in second.
     :param pps - packets to be sent per second.
+    :param second_host - an optional second host to send to.
     """
     print("[+] Starting UDP Port Increase Scan to {0} for {1} "
           "seconds with {2} packets per second.".format(host_ip4,
                                                         duration, pps))
     wait_duration = 1/float(pps)
     signal.alarm(duration)
-    for i in range(MAX_PORTS):
-        send_udp(host_ip4, i, PORT_SRC, i)
-        time.sleep(wait_duration)
+    if second_host == "N/A":
+        for i in range(MAX_PORTS):
+            send_udp(host_ip4, i, PORT_SRC, i)
+            time.sleep(wait_duration)
+    else:
+        for i in range(MAX_PORTS):
+            second_host_port = i + 500
+            send_udp(host_ip4, i, PORT_SRC, i)
+            send_udp(second_host, second_host_port, PORT_SRC, i)
+            time.sleep(wait_duration)
 
 
 if __name__ == "__main__":
@@ -75,6 +83,7 @@ if __name__ == "__main__":
     duration_help = "The duration of the scan (sec)."
     pps_help = "Number of frames to send per second."
     start_help = "Time to start the script at (optional)."
+    second_host_help = "An optional second host to send to."
     
     parser = argparse.ArgumentParser(description=program_desc)
     parser.add_argument("host_ip4", metavar="IPv4", type=str,
@@ -85,11 +94,13 @@ if __name__ == "__main__":
                         type=int, help=pps_help)
     parser.add_argument("-s", dest="start", default="N/A",
                         help=start_help)
+    parser.add_argument("-2", dest="second_host", default="N/A",
+                        help=second_host_help)
     args = parser.parse_args()
     if args.start != "N/A":
         start_time = None
         try:
-            start_time = dt.datetime.strptime(args.start, "%H:%M")
+            start_time = dt.datetime.strptime(args.start, "%H:%M:%S")
         except ValueError:
             print("[-] Invalid time passed.")
             sys.exit(-1)
@@ -97,10 +108,9 @@ if __name__ == "__main__":
         normalised_current = dt.datetime.strptime(current_time,
                                                   "%H:%M:%S")
         wait_for = (start_time - normalised_current).seconds
-        print("waiting for: {0}".format(wait_for))
         time.sleep(wait_for)
     if args.pps < 1:
         print("[-] Packets per second argument should be a whole "
               "number larger than 0.")
         sys.exit(-1)
-    main(args.host_ip4, args.duration, args.pps)
+    main(args.host_ip4, args.duration, args.pps, args.second_host)
